@@ -1,27 +1,28 @@
-import { Server } from 'socket.io';
+import { Server, Socket} from 'socket.io';
 import http from 'http';
-import express from 'express';
+import express, { Express } from 'express';
 import mongoose from 'mongoose';
 import DocumentSchema from './DocumentSchema';
-//import DocumentSchema  from "./DocumentSchema";
-const app = express()
-const server = http.createServer(app);
+
+const app: Express = express()
+const server: http.Server = http.createServer(app);
 mongoose.connect('mongodb://localhost:27017/shareit');
 mongoose.set('debug', true);
 interface ServerToClientEvents {
   'receive-changes': (delta: any) => void,
-  'load-document': (delta: any) => void
+  'load-document': (delta: any) => void,
 }
 
 interface ClientToServerEvents {
-  'send-changes': any,
-  'get-document': any
+  'send-changes': (delta: any) => void,
+  'get-document': (id: string) => void,
+  'save-changes': (delta: any) => void,
 }
-const io = new Server(server, {cors: {
+const io: Server<ClientToServerEvents, ServerToClientEvents>= new Server(server, {cors: {
   origin: 'http://localhost:3000'
 }})
 
-io.on('connection', (socket: any) => {
+io.on('connection', (socket: Socket) => {
     socket.on('get-document', async (documentId: string) => {
       const document = await findOrCreateDocument(documentId)
       socket.join(documentId)
