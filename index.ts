@@ -34,7 +34,7 @@ io.on('connection', (socket: Socket) => {
       })
 
       socket.on('save-changes', async (delta: any) => {
-        await DocumentSchema.findByIdAndUpdate(documentId, {data: delta})
+        await DocumentSchema.findByIdAndUpdate(documentId, {data: delta, lastAccessTime: Date.now()})
     })
 
     })
