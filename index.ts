@@ -42,6 +42,7 @@ io.on('connection', (socket: Socket) => {
 
 const findOrCreateDocument = async (id: string) => {
   if(id == null) return
+  let unusedVar
   const document = await DocumentSchema.findById(id)
   if(document){
     return document
