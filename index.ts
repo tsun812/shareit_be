@@ -47,7 +47,7 @@ const findOrCreateDocument = async (id: string) => {
     return document
   }
   else {
-    return await DocumentSchema.create({_id: id, data: ''})
+    return await DocumentSchema.create({_id: id, data: '', lastAccessTime: Date.now()})
   }
 }
 
